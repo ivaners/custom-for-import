@@ -3,7 +3,7 @@
 			<ProjectGuid>{8ED594DF-5B26-4F15-B108-0B4C45B92B64}</ProjectGuid>
 			<ProjectVersion>12.0</ProjectVersion>
 			<MainSource>Project1.dpr</MainSource>
-			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">

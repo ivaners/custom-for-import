@@ -32,7 +32,7 @@ implementation
 
 {$R *.dfm}
 
-uses SuperObject;
+uses SuperObject,HproseClient, HproseCommon, HproseHttpClient;
 
 var
   jo: ISuperObject;
@@ -40,26 +40,43 @@ var
 
 
 procedure TForm1.Button1Click(Sender: TObject);
+var
+  CsvLines, CommaStr: TStringList;
+  i:integer;
+  client : THproseHttpClient;     //定义HproseClient对象
+  Args: TVariants;                //RPC远程函数的参数
+  Rslt: string;//返回值
 begin
-if ComboBox1.ItemIndex=-1 then
-begin
-  MessageBox(Form1.Handle, '请选择站点！', '提示', MB_OK+MB_ICONHAND);
-  exit;
-end;
+  if ComboBox1.ItemIndex=-1 then
+  begin
+    MessageBox(Form1.Handle, '请选择站点！', '提示', MB_OK+MB_ICONHAND);
+    exit;
+  end;
 
-if RadioGroup1.ItemIndex=-1 then
-begin
-   MessageBox(Form1.Handle, '请选择资料导入类型！', '提示', MB_OK+MB_ICONHAND);
-   exit;
-end;
+  if RadioGroup1.ItemIndex=-1 then
+  begin
+     MessageBox(Form1.Handle, '请选择资料导入类型！', '提示', MB_OK+MB_ICONHAND);
+     exit;
+  end;
 
-if Edit1.Text='' then
-begin
-  MessageBox(Form1.Handle, '请选择导入文件！', '提示', MB_OK+MB_ICONHAND);
-  exit;
-end;
+  if Edit1.Text='' then
+  begin
+    MessageBox(Form1.Handle, '请选择导入文件！', '提示', MB_OK+MB_ICONHAND);
+    exit;
+  end;
 
-showmessage(vitem[ComboBox1.ItemIndex]['id'].AsString);
+  CsvLines := TStringList.Create;
+  CommaStr := TStringList.Create;
+  CsvLines.LoadFromFile(Edit1.Text);  //读取
+
+  for i:=1 to CsvLines.Count-1 do
+    CommaStr.CommaText := CsvLines[i];
+  SetLength(Args, 2);
+
+  client := THproseHttpClient.Create(nil);
+  client.UseService('http://l.gzbms.com/newbms/index.php?app=api&mod=common');
+  Rslt:=VarToStr(client.Invoke('test',Args));
+  showmessage(Rslt);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
